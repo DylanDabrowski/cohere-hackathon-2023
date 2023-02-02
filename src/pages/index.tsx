@@ -4,12 +4,12 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-const goUp = {
+const titles = {
   visible: { y: 0 },
-  hidden: { y: "-100%" },
+  hidden: { y: "-200%" },
 };
 
-const goDown = {
+const startBtn = {
   visible: { bottom: 0 },
   hidden: { bottom: -200 },
 };
@@ -24,6 +24,11 @@ const rapper = {
   out: { opacity: 1 },
 };
 
+const rapperContainer = {
+  normal: { y: 0 },
+  up: { y: -100 },
+};
+
 export default function Home() {
   const [rapper1, setRapper1] = useState<string>();
   const [rapper2, setRapper2] = useState<string>();
@@ -34,6 +39,10 @@ export default function Home() {
     console.log(rapper1);
     console.log(rapper2);
     setGameActive(true);
+  };
+
+  const startVerse = (topic: string) => {
+    // calls API endpoint with the current rapper & topic, and returns a verse and the audio
   };
 
   return (
@@ -49,7 +58,7 @@ export default function Home() {
           <div className="w-full h-full bg-black opacity-80 fixed -z-10"></div>
           <motion.div
             animate={gameActive ? "hidden" : "closed"}
-            variants={goUp}
+            variants={titles}
             transition={{ ease: "circIn", duration: 1 }}
           >
             <h1 className="text-white text-4xl mt-12 text-center mx-4">
@@ -67,7 +76,12 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="flex w-full justify-around mt-10">
+          <motion.div
+            className="flex w-full justify-around mt-10"
+            animate={gameActive ? "up" : "normal"}
+            variants={rapperContainer}
+            transition={{ ease: "circInOut", duration: 2 }}
+          >
             <div className="flex flex-col justify-center w-50">
               <div className="w-40 h-40 relative mb-10">
                 {rapper1 ? (
@@ -87,14 +101,13 @@ export default function Home() {
                   <></>
                 )}
               </div>
-              <motion.div
-                animate={gameActive ? "hidden" : "closed"}
-                variants={fadeOut}
-                transition={{ duration: 0.5 }}
-                className="flex justify-center"
-              >
-                <DropdownMenu setRapper={setRapper1} />
-              </motion.div>
+              {!gameActive ? (
+                <div className="flex justify-center">
+                  <DropdownMenu setRapper={setRapper1} />
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
             <div className="flex flex-col justify-center w-50">
               <div className="w-40 h-40 relative -scale-x-100 mb-10">
@@ -115,21 +128,43 @@ export default function Home() {
                   <></>
                 )}
               </div>
-              <motion.div
-                animate={gameActive ? "hidden" : "closed"}
-                variants={fadeOut}
-                transition={{ duration: 0.5 }}
-                className="flex justify-center"
-              >
-                <DropdownMenu setRapper={setRapper2} />
-              </motion.div>
+              {!gameActive ? (
+                <div className="flex justify-center">
+                  <DropdownMenu setRapper={setRapper2} />
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
-          </div>
+          </motion.div>
+          {gameActive ? (
+            <div>
+              <h3 className="text-white flex flex-col text-center">
+                What do you wanna diss them about?
+              </h3>
+              <div className="flex">
+                <button
+                  className="text-gray-700 text-xs p-3 m-2 bg-yellow-100 rounded-2xl"
+                  onClick={() => startVerse("their mommma")}
+                >
+                  their mommma
+                </button>
+                <button className="text-gray-700 text-xs p-3 m-2 bg-yellow-100 rounded-2xl">
+                  their mommma and daddy and cousin and sister
+                </button>
+                <button className="text-gray-700 text-xs p-3 m-2  bg-yellow-100 rounded-2xl">
+                  their dog
+                </button>
+              </div>
+            </div>
+          ) : (
+            <></>
+          )}
           <motion.button
             className="text-white text-4xl fixed bottom-16 left-1/2 -translate-x-1/2"
             onClick={startGame}
             animate={gameActive ? "hidden" : "closed"}
-            variants={goDown}
+            variants={startBtn}
             transition={{ ease: "circIn", duration: 1 }}
           >
             Start Battle!
