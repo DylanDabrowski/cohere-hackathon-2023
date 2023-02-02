@@ -1,17 +1,39 @@
+import DropdownMenu from "@/components/DropdownMenu";
 import Head from "next/head";
 import { useState } from "react";
-import Dropdown from "react-dropdown";
-import "react-dropdown/style.css";
+import { motion } from "framer-motion";
+import Image from "next/image";
 
-const rappers = ["Drake", "Kanye", "Future", "Young Thug"];
+const goUp = {
+  visible: { y: 0 },
+  hidden: { y: "-100%" },
+};
+
+const goDown = {
+  visible: { bottom: 0 },
+  hidden: { bottom: -200 },
+};
+
+const fadeOut = {
+  visible: { opacity: 1 },
+  hidden: { opacity: 0 },
+};
+
+const rapper = {
+  hidden: { opacity: 0.5 },
+  out: { opacity: 1 },
+};
 
 export default function Home() {
   const [rapper1, setRapper1] = useState<string>();
   const [rapper2, setRapper2] = useState<string>();
+  const [gameActive, setGameActive] = useState<boolean>(false);
+  const [p1Turn, setP1Turn] = useState<boolean>(true);
 
   const startGame = (e: any) => {
     console.log(rapper1);
     console.log(rapper2);
+    setGameActive(true);
   };
 
   return (
@@ -23,38 +45,95 @@ export default function Home() {
         <link rel="icon" href="/favicon.png" />
       </Head>
       <main>
-        <div className="w-screen h-screen fixed bg-pixelart flex flex-col text-center items-center">
+        <div className="w-screen h-screen fixed bg-pixelart flex flex-col items-center">
           <div className="w-full h-full bg-black opacity-80 fixed -z-10"></div>
-          <h1 className="text-white text-7xl mt-12">
-            Co:here to Rule the Mic!
-          </h1>
-          <p className="text-white text-xl mt-8 max-w-lg">
-            Listen up! It's the AI Rap Battle, two digital MCs clashin' rhymes,
-            algorithms and beats, in a virtual arena, no human needed. They'll
-            bring the heat and show what's possible, with bars so fly it'll
-            leave you speechless. Get ready for a digital showdown, it's the AI
-            Rap Battle, and it's gonna be lit!
-          </p>
-          <div className="flex w-full justify-center gap-[500px] mt-56">
-            <Dropdown
-              options={rappers}
-              onChange={(e) => setRapper1(e.value)}
-              value={rapper1}
-              placeholder="Rapper #1"
-            />
-            <Dropdown
-              options={rappers}
-              onChange={(e) => setRapper2(e.value)}
-              value={rapper2}
-              placeholder="Rapper #2"
-            />
-          </div>
-          <button
-            className="text-white text-4xl fixed bottom-32 left-1/2 -translate-x-1/2"
-            onClick={startGame}
+          <motion.div
+            animate={gameActive ? "hidden" : "closed"}
+            variants={goUp}
+            transition={{ ease: "circIn", duration: 1 }}
           >
-            Start Game
-          </button>
+            <h1 className="text-white text-4xl mt-12 text-center mx-4">
+              Co:here to Rule the Mic!
+            </h1>
+            <p className="text-white text-sm mt-8 mx-4 max-w-sm">
+              Listen up! It's the AI Rap Battle, two digital MCs clashin'
+              rhymes, algorithms and beats, in a virtual arena, no human needed.
+              They'll bring the heat and show what's possible, with bars so fly
+              it'll leave you speechless. Get ready for a digital showdown, it's
+              the AI Rap Battle, and it's gonna be lit!
+            </p>
+            <p className="text-white mt-5 text-lg text-center">
+              Choose your Rappers!
+            </p>
+          </motion.div>
+
+          <div className="flex w-full justify-around mt-10">
+            <div className="flex flex-col justify-center w-50">
+              <div className="w-40 h-40 relative mb-10">
+                {rapper1 ? (
+                  <motion.div
+                    animate={!gameActive ? "out" : p1Turn ? "out" : "hidden"}
+                    variants={rapper}
+                    transition={{ ease: "circIn", duration: 1 }}
+                  >
+                    <Image
+                      src={"/drake.png"}
+                      alt="rapper image"
+                      fill
+                      className="object-contain"
+                    />
+                  </motion.div>
+                ) : (
+                  <></>
+                )}
+              </div>
+              <motion.div
+                animate={gameActive ? "hidden" : "closed"}
+                variants={fadeOut}
+                transition={{ duration: 0.5 }}
+                className="flex justify-center"
+              >
+                <DropdownMenu setRapper={setRapper1} />
+              </motion.div>
+            </div>
+            <div className="flex flex-col justify-center w-50">
+              <div className="w-40 h-40 relative -scale-x-100 mb-10">
+                {rapper2 ? (
+                  <motion.div
+                    animate={!gameActive ? "out" : p1Turn ? "hidden" : "out"}
+                    variants={rapper}
+                    transition={{ ease: "circIn", duration: 1 }}
+                  >
+                    <Image
+                      src={"/drake.png"}
+                      alt="rapper image"
+                      fill
+                      className="object-contain"
+                    />
+                  </motion.div>
+                ) : (
+                  <></>
+                )}
+              </div>
+              <motion.div
+                animate={gameActive ? "hidden" : "closed"}
+                variants={fadeOut}
+                transition={{ duration: 0.5 }}
+                className="flex justify-center"
+              >
+                <DropdownMenu setRapper={setRapper2} />
+              </motion.div>
+            </div>
+          </div>
+          <motion.button
+            className="text-white text-4xl fixed bottom-16 left-1/2 -translate-x-1/2"
+            onClick={startGame}
+            animate={gameActive ? "hidden" : "closed"}
+            variants={goDown}
+            transition={{ ease: "circIn", duration: 1 }}
+          >
+            Start Battle!
+          </motion.button>
         </div>
       </main>
     </>
