@@ -1,6 +1,11 @@
 import DropdownMenu from "@/components/DropdownMenu";
 import Head from "next/head";
-import { useState } from "react";
+import {
+  JSXElementConstructor,
+  ReactElement,
+  ReactFragment,
+  useState,
+} from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
@@ -34,6 +39,9 @@ export default function Home() {
   const [rapper2, setRapper2] = useState<string>();
   const [gameActive, setGameActive] = useState<boolean>(false);
   const [p1Turn, setP1Turn] = useState<boolean>(true);
+  const [rapping, setRapping] = useState<boolean>(false);
+  const verses: string[] = [];
+  const [currentVerse, setCurrentVerse] = useState<string>("");
 
   const startGame = (e: any) => {
     console.log(rapper1);
@@ -43,6 +51,10 @@ export default function Home() {
 
   const startVerse = (topic: string) => {
     // calls API endpoint with the current rapper & topic, and returns a verse and the audio
+    setCurrentVerse(
+      `You are so ugly and dumb and stupid (yuh) you should probably eat some weiners, the topic is ${topic}`
+    );
+    setRapping(true);
   };
 
   return (
@@ -60,6 +72,7 @@ export default function Home() {
             animate={gameActive ? "hidden" : "closed"}
             variants={titles}
             transition={{ ease: "circIn", duration: 1 }}
+            className="flex flex-col justify-center items-center"
           >
             <h1 className="text-white text-4xl mt-12 text-center mx-4">
               Co:here to Rule the Mic!
@@ -71,17 +84,12 @@ export default function Home() {
               it'll leave you speechless. Get ready for a digital showdown, it's
               the AI Rap Battle, and it's gonna be lit!
             </p>
-            <p className="text-white mt-5 text-lg text-center">
+            <p className="text-white mt-8 text-xl text-center">
               Choose your Rappers!
             </p>
           </motion.div>
 
-          <motion.div
-            className="flex w-full justify-around mt-10"
-            animate={gameActive ? "up" : "normal"}
-            variants={rapperContainer}
-            transition={{ ease: "circInOut", duration: 2 }}
-          >
+          <motion.div className="flex w-full justify-around mt-10">
             <div className="flex flex-col justify-center w-50">
               <div className="w-40 h-40 relative mb-10">
                 {rapper1 ? (
@@ -138,25 +146,29 @@ export default function Home() {
             </div>
           </motion.div>
           {gameActive ? (
-            <div>
-              <h3 className="text-white flex flex-col text-center">
-                What do you wanna diss them about?
-              </h3>
-              <div className="flex">
-                <button
-                  className="text-gray-700 text-xs p-3 m-2 bg-yellow-100 rounded-2xl"
-                  onClick={() => startVerse("their mommma")}
-                >
-                  their mommma
-                </button>
-                <button className="text-gray-700 text-xs p-3 m-2 bg-yellow-100 rounded-2xl">
-                  their mommma and daddy and cousin and sister
-                </button>
-                <button className="text-gray-700 text-xs p-3 m-2  bg-yellow-100 rounded-2xl">
-                  their dog
-                </button>
+            rapping ? (
+              <p className="text-white m-5 text-center">{currentVerse}</p>
+            ) : (
+              <div>
+                <h3 className="text-white flex flex-col text-center">
+                  What do you wanna diss them about?
+                </h3>
+                <div className="flex">
+                  <button
+                    className="text-gray-700 text-xs p-3 m-2 bg-yellow-100 rounded-2xl"
+                    onClick={() => startVerse("their mommma")}
+                  >
+                    their mommma
+                  </button>
+                  <button className="text-gray-700 text-xs p-3 m-2 bg-yellow-100 rounded-2xl">
+                    their mommma and daddy and cousin and sister
+                  </button>
+                  <button className="text-gray-700 text-xs p-3 m-2  bg-yellow-100 rounded-2xl">
+                    their dog
+                  </button>
+                </div>
               </div>
-            </div>
+            )
           ) : (
             <></>
           )}
