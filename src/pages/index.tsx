@@ -7,7 +7,8 @@ import {
   useState,
 } from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
+import TopicPrompts from "@/components/TopicPrompts";
+import CharacterSelect from "@/components/CharacterSelect";
 
 const titles = {
   visible: { y: 0 },
@@ -24,19 +25,9 @@ const fadeOut = {
   hidden: { opacity: 0 },
 };
 
-const rapper = {
-  hidden: { opacity: 0.5 },
-  out: { opacity: 1 },
-};
-
-const rapperContainer = {
-  normal: { y: 0 },
-  up: { y: -100 },
-};
-
 export default function Home() {
-  const [rapper1, setRapper1] = useState<string>();
-  const [rapper2, setRapper2] = useState<string>();
+  const [rapper1, setRapper1] = useState<string>("");
+  const [rapper2, setRapper2] = useState<string>("");
   const [gameActive, setGameActive] = useState<boolean>(false);
   const [p1Turn, setP1Turn] = useState<boolean>(true);
   const [rapping, setRapping] = useState<boolean>(false);
@@ -84,90 +75,31 @@ export default function Home() {
               it'll leave you speechless. Get ready for a digital showdown, it's
               the AI Rap Battle, and it's gonna be lit!
             </p>
-            <p className="text-white mt-8 text-xl text-center">
+            <p className="text-yellow-100 mt-8 text-xl text-center">
               Choose your Rappers!
             </p>
           </motion.div>
 
-          <motion.div className="flex w-full justify-around mt-10">
-            <div className="flex flex-col justify-center w-50">
-              <div className="w-40 h-40 relative mb-10">
-                {rapper1 ? (
-                  <motion.div
-                    animate={!gameActive ? "out" : p1Turn ? "out" : "hidden"}
-                    variants={rapper}
-                    transition={{ ease: "circIn", duration: 1 }}
-                  >
-                    <Image
-                      src={"/drake.png"}
-                      alt="rapper image"
-                      fill
-                      className="object-contain"
-                    />
-                  </motion.div>
-                ) : (
-                  <></>
-                )}
-              </div>
-              {!gameActive ? (
-                <div className="flex justify-center">
-                  <DropdownMenu setRapper={setRapper1} />
-                </div>
-              ) : (
-                <></>
-              )}
-            </div>
-            <div className="flex flex-col justify-center w-50">
-              <div className="w-40 h-40 relative -scale-x-100 mb-10">
-                {rapper2 ? (
-                  <motion.div
-                    animate={!gameActive ? "out" : p1Turn ? "hidden" : "out"}
-                    variants={rapper}
-                    transition={{ ease: "circIn", duration: 1 }}
-                  >
-                    <Image
-                      src={"/drake.png"}
-                      alt="rapper image"
-                      fill
-                      className="object-contain"
-                    />
-                  </motion.div>
-                ) : (
-                  <></>
-                )}
-              </div>
-              {!gameActive ? (
-                <div className="flex justify-center">
-                  <DropdownMenu setRapper={setRapper2} />
-                </div>
-              ) : (
-                <></>
-              )}
-            </div>
-          </motion.div>
+          <CharacterSelect
+            rapper1={rapper1}
+            setRapper1={setRapper1}
+            rapper2={rapper2}
+            setRapper2={setRapper2}
+            gameActive={gameActive}
+            p1Turn={p1Turn}
+          />
           {gameActive ? (
             rapping ? (
               <p className="text-white m-5 text-center">{currentVerse}</p>
             ) : (
-              <div>
-                <h3 className="text-white flex flex-col text-center">
-                  What do you wanna diss them about?
-                </h3>
-                <div className="flex">
-                  <button
-                    className="text-gray-700 text-xs p-3 m-2 bg-yellow-100 rounded-2xl"
-                    onClick={() => startVerse("their mommma")}
-                  >
-                    their mommma
-                  </button>
-                  <button className="text-gray-700 text-xs p-3 m-2 bg-yellow-100 rounded-2xl">
-                    their mommma and daddy and cousin and sister
-                  </button>
-                  <button className="text-gray-700 text-xs p-3 m-2  bg-yellow-100 rounded-2xl">
-                    their dog
-                  </button>
-                </div>
-              </div>
+              <TopicPrompts
+                topics={[
+                  "their momma",
+                  "their momma and daddy and sister and cousin",
+                  "their dog",
+                ]}
+                startVerse={startVerse}
+              />
             )
           ) : (
             <></>
